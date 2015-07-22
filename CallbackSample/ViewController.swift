@@ -11,36 +11,38 @@ import UIKit
 final class ViewController: UIViewController {
     
     var comebackFromSafari = false
-    let swiftButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width , UIScreen.mainScreen().bounds.height))
+    let NOTIFICATION_COMEBACK_ANDROID = "ComebackAndroid"
+    let interestButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width , UIScreen.mainScreen().bounds.height))
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         setupButton()
-        swiftButton.enabled = false
+        interestButton.enabled = false
         
         let task = Task()
         task.delegate = self
-        task.fetchLatestArticle("swift")
+        task.fetchLatestArticle(getCurrentInterest())
         
         // バックグラウンドから復帰した際のObserver
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "comeback:", name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
 }
 
 
 extension ViewController {
-    internal func fetchSwift(sender: AnyObject) {
-        swiftButton.enabled = false
-        println("fetchSwift")
+    internal func fetchCurrentInterest(sender: AnyObject) {
+        println("fetchCurrentInterest")
+        interestButton.enabled = false
         let task = Task()
         task.delegate = self
-        task.fetchLatestArticle("swift")
+        task.fetchLatestArticle(interestButton.titleLabel?.text ?? "Swift")
     }
     
     internal func comeback(sender: AnyObject) {
@@ -54,15 +56,23 @@ extension ViewController {
                 completion: {(isPositive) -> Void in
                     if isPositive {
                         println("Androidも興味があるらしい")
+                        self.chengeButtonDesign()
                         let task = Task()
                         task.delegate = self
-                        task.fetchLatestArticle("Android")
+                        task.fetchLatestArticle(self.getCurrentInterest())
+//                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "comebackAndroid:", name: self.NOTIFICATION_COMEBACK_ANDROID, object: nil)
                     } else {
                         println("Androidには興味がないらしい")
+                        self.chengeButtonDesign()
                     }
                 }
             )
         }
+    }
+    
+    internal func comebackAndroid(sender: AnyObject) {
+        println("comebackAndroid: method")
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NOTIFICATION_COMEBACK_ANDROID, object: nil)
     }
 }
 
@@ -70,10 +80,20 @@ extension ViewController {
 // MARK: - Private
 extension ViewController {
     func setupButton() {
-        swiftButton.backgroundColor = UIColor.orangeColor()
-        swiftButton.setTitle("Swift", forState: .Normal)
-        swiftButton.addTarget(self, action: "fetchSwift:", forControlEvents: .TouchUpInside)
-        self.view.addSubview(swiftButton)
+        interestButton.backgroundColor = UIColor.orangeColor()
+        interestButton.setTitle("Swift", forState: .Normal)
+        interestButton.addTarget(self, action: "fetchCurrentInterest:", forControlEvents: .TouchUpInside)
+        self.view.addSubview(interestButton)
+    }
+    
+    func getCurrentInterest() -> String {
+        return interestButton.titleLabel?.text ?? "Swift"
+    }
+    
+    // TODO: 引数にinterestを渡す
+    func chengeButtonDesign() {
+        interestButton.backgroundColor = UIColor.greenColor()
+        interestButton.setTitle("Android", forState: .Normal)
     }
 }
 
@@ -81,7 +101,7 @@ extension ViewController {
 // MARK: - TaskDelegate
 extension ViewController: TaskDelegate {
     func complete(qiitaArticle: QiitaArticle) {
-        swiftButton.enabled = true
+        interestButton.enabled = true
         println("TaskDelegate complete: \(qiitaArticle)")
         
         // クリック時に呼ばれるメソッドを定義
@@ -106,7 +126,7 @@ extension ViewController: TaskDelegate {
     }
     
     func failed(error: NSError) {
-        swiftButton.enabled = true
+        interestButton.enabled = true
         println("TaskDelegate failed: \(error.debugDescription)")
     }
 }
