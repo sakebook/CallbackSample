@@ -10,19 +10,17 @@ import UIKit
 
 final class ViewController: UIViewController {
     
-    var comebackFromSafari = false
+    var openedArticle: QiitaArticle?
     let NOTIFICATION_COMEBACK_ANDROID = "ComebackAndroid"
     let interestButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width , UIScreen.mainScreen().bounds.height))
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         setupButton()
-        interestButton.enabled = false
-        
         let task = Task()
         task.delegate = self
-        task.fetchLatestArticle(getCurrentInterest())
+        task.fetchLatestArticle("Swift")
+        interestButton.enabled = false
         
         // バックグラウンドから復帰した際のObserver
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "comeback:", name: UIApplicationWillEnterForegroundNotification, object: nil)
@@ -37,33 +35,39 @@ final class ViewController: UIViewController {
 
 
 extension ViewController {
+    
+    /**
+    画面をタッチした際に呼ばれる
+    */
     internal func fetchCurrentInterest(sender: AnyObject) {
-        println("fetchCurrentInterest")
-        interestButton.enabled = false
+        let btn = sender as! UIButton
         let task = Task()
         task.delegate = self
-        task.fetchLatestArticle(interestButton.titleLabel?.text ?? "Swift")
+        task.fetchLatestArticle(btn.titleLabel?.text ?? "Swift")
+        interestButton.enabled = false
     }
     
-    internal func comeback(sender: AnyObject) {
+    /**
+    バックグラウンドから復帰した時に呼ばれる
+    */
+    internal func comeback(notification: NSNotification) {
         println("becomeActive")
-        
         // Safariで記事を開いた後に戻った時のみ呼ばれる
-        if comebackFromSafari {
-            comebackFromSafari = false
-            
-            ClosureAlert.showAlert(self, title: "記事はどうだった？", message: "Androidも興味ある？",
+        if let article = openedArticle {
+            openedArticle = nil
+            ClosureAlert.showAlert(self, title: "記事はどうだった？", message: "\(article.topTag)以外も興味ある？",
                 completion: {(isPositive) -> Void in
                     if isPositive {
-                        println("Androidも興味があるらしい")
-                        self.chengeButtonDesign()
+                        println("ほかにも興味があるらしい")
+                        let interest = Interest(article: article)
+                        self.chengeButtonDesign(interest)
                         let task = Task()
                         task.delegate = self
-                        task.fetchLatestArticle(self.getCurrentInterest())
+                        task.fetchLatestArticle(interest.name)
 //                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "comebackAndroid:", name: self.NOTIFICATION_COMEBACK_ANDROID, object: nil)
                     } else {
-                        println("Androidには興味がないらしい")
-                        self.chengeButtonDesign()
+                        println("ほかには興味がないらしい")
+                        self.chengeButtonDesign(Interest(type: .Swift))
                     }
                 }
             )
@@ -79,6 +83,10 @@ extension ViewController {
 
 // MARK: - Private
 extension ViewController {
+    
+    /**
+    全面サイズのボタンの初期化
+    */
     func setupButton() {
         interestButton.backgroundColor = UIColor.orangeColor()
         interestButton.setTitle("Swift", forState: .Normal)
@@ -86,14 +94,11 @@ extension ViewController {
         self.view.addSubview(interestButton)
     }
     
-    func getCurrentInterest() -> String {
-        return interestButton.titleLabel?.text ?? "Swift"
-    }
-    
-    // TODO: 引数にinterestを渡す
-    func chengeButtonDesign() {
-        interestButton.backgroundColor = UIColor.greenColor()
-        interestButton.setTitle("Android", forState: .Normal)
+    func chengeButtonDesign(interest: Interest) {
+        UIView.animateWithDuration(0.5, animations: {
+            self.interestButton.backgroundColor = interest.color
+            self.interestButton.setTitle(interest.name, forState: .Normal)
+        })
     }
 }
 
@@ -101,17 +106,17 @@ extension ViewController {
 // MARK: - TaskDelegate
 extension ViewController: TaskDelegate {
     func complete(qiitaArticle: QiitaArticle) {
-        interestButton.enabled = true
         println("TaskDelegate complete: \(qiitaArticle)")
         
         // クリック時に呼ばれるメソッドを定義
         let completeAction: (Bool) -> Void = {
             (isPositive) -> Void in
+            self.interestButton.enabled = true
             if isPositive {
                 println("Safariを開こうとする")
                 if let url = NSURL(string: qiitaArticle.url) {
                     println("Safariを開く")
-                    self.comebackFromSafari = true
+                    self.openedArticle = qiitaArticle
                     UIApplication.sharedApplication().openURL(url)
                 }
             } else {
