@@ -37,8 +37,8 @@ extension Task {
             // 初めの記事を取得
             let article = jsonArray.objectAtIndex(0) as! [String: AnyObject]
 
-            if let url = article["url"] as? String, let title = article["title"] as? String, let tags = article["tags"] as? NSArray, let tag = tags.objectAtIndex(0) as? [String: AnyObject], let tagName = tag["name"] as? String{
-                let qiitaArticle = QiitaArticle(url: url, title: title, topTag: tagName)
+            if let url = article["url"] as? String, let title = article["title"] as? String, let tags = article["tags"] as? NSArray {
+                let qiitaArticle = QiitaArticle(url: url, title: title, tagArray: tags)
                 self.delegate?.complete(qiitaArticle)
             } else {
                 let er = NSError(domain: "not found url and title", code: 404, userInfo: nil)

@@ -11,8 +11,25 @@ import Foundation
 struct QiitaArticle {
     let url: String
     let title: String
-    let topTag: String
+    var tags: [String] = []
+    let number: Int
     
-    // TODO: 初期化
+    init(url: String, title: String, tagArray: NSArray) {
+        self.url = url
+        self.title = title
+        
+        for tag in tagArray {
+            self.tags.append(tag["name"] as! String)
+        }
+        self.number = Int(arc4random_uniform(UInt32(tags.count-1)))
+    }
+    
+    init(url: String, title: String, tagName: String) {
+        self.url = url
+        self.title = title
+        self.tags = [tagName]
+        self.number = Int(arc4random_uniform(UInt32(tags.count-1)))
+    }
+    
 }
 

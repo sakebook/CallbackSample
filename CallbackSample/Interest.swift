@@ -30,7 +30,8 @@ struct Interest {
     }
     
     init(article: QiitaArticle) {
-        if let type = Type(rawValue: article.topTag) {
+        let num = Int(arc4random_uniform(UInt32(article.tags.count-1)))
+        if let type = Type(rawValue: article.tags[num]) {
             switch(type) {
             case .Swift:
                 name = "Swift"
@@ -40,8 +41,8 @@ struct Interest {
                 color = UIColor.greenColor()
             }
         } else {
-            name = article.topTag
-            color = UIColor.grayColor()
+            name = article.tags[num]
+            color = UIColor(red: CGFloat(arc4random_uniform(UInt32(255))), green: CGFloat(arc4random_uniform(UInt32(255))), blue: CGFloat(arc4random_uniform(UInt32(255))), alpha: 1)
         }
     }
 }

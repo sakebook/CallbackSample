@@ -17,10 +17,7 @@ final class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupButton()
-        let task = Task()
-        task.delegate = self
-        task.fetchLatestArticle("Swift")
-        interestButton.enabled = false
+        fetchArticleWihtTagName("Swift")
         
         // バックグラウンドから復帰した際のObserver
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "comeback:", name: UIApplicationWillEnterForegroundNotification, object: nil)
@@ -40,11 +37,7 @@ extension ViewController {
     画面をタッチした際に呼ばれる
     */
     internal func fetchCurrentInterest(sender: AnyObject) {
-        let btn = sender as! UIButton
-        let task = Task()
-        task.delegate = self
-        task.fetchLatestArticle(btn.titleLabel?.text ?? "Swift")
-        interestButton.enabled = false
+        fetchArticleWihtTagName(interestButton.titleLabel?.text ?? "Swift")
     }
     
     /**
@@ -55,7 +48,7 @@ extension ViewController {
         // Safariで記事を開いた後に戻った時のみ呼ばれる
         if let article = openedArticle {
             openedArticle = nil
-            ClosureAlert.showAlert(self, title: "記事はどうだった？", message: "\(article.topTag)以外も興味ある？",
+            ClosureAlert.showAlert(self, title: "記事はどうだった？", message: "\(article.tags[article.number])も興味ある？",
                 completion: {(isPositive) -> Void in
                     if isPositive {
                         println("ほかにも興味があるらしい")
@@ -99,6 +92,16 @@ extension ViewController {
             self.interestButton.backgroundColor = interest.color
             self.interestButton.setTitle(interest.name, forState: .Normal)
         })
+    }
+    
+    /**
+    指定したTagの記事を取得しに行く
+    */
+    func fetchArticleWihtTagName(tagName: String) {
+        let task = Task()
+        task.delegate = self
+        task.fetchLatestArticle(tagName)
+        interestButton.enabled = false
     }
 }
 
