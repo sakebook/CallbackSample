@@ -54,9 +54,7 @@ extension ViewController {
                         println("ほかにも興味があるらしい")
                         let interest = Interest(article: article)
                         self.chengeButtonDesign(interest)
-                        let task = Task()
-                        task.delegate = self
-                        task.fetchLatestArticle(interest.name)
+                        self.fetchArticleWihtTagName(interest.name)
 //                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "comebackAndroid:", name: self.NOTIFICATION_COMEBACK_ANDROID, object: nil)
                     } else {
                         println("ほかには興味がないらしい")
