@@ -21,5 +21,38 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
+        <!--Web View Controller-->
+        <scene sceneID="YGV-Me-wl8">
+            <objects>
+                <viewController storyboardIdentifier="WebViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="eId-Ul-0mG" customClass="WebViewController" customModule="CallbackSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="We9-o8-mgt"/>
+                        <viewControllerLayoutGuide type="bottom" id="cch-bv-xIU"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="KL8-cY-GtO">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mka-rG-Ond">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="cch-bv-xIU" firstAttribute="top" secondItem="Mka-rG-Ond" secondAttribute="bottom" id="9rk-H6-cyB"/>
+                            <constraint firstItem="Mka-rG-Ond" firstAttribute="leading" secondItem="KL8-cY-GtO" secondAttribute="leading" id="LdK-sT-KoR"/>
+                            <constraint firstAttribute="trailing" secondItem="Mka-rG-Ond" secondAttribute="trailing" id="OrT-ZG-kVu"/>
+                            <constraint firstItem="Mka-rG-Ond" firstAttribute="top" secondItem="We9-o8-mgt" secondAttribute="bottom" id="pXz-Cv-44t"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="webView" destination="Mka-rG-Ond" id="Rvp-uV-68y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5N3-10-R19" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="923" y="191"/>
+        </scene>
     </scenes>
 </document>

@@ -122,6 +122,8 @@ extension ViewController: TaskDelegate {
                 }
             } else {
                 println("Safariを開かない")
+                let controller = self.storyboard?.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+                self.presentViewController(controller, animated: true, completion: nil)
             }
         }
         
