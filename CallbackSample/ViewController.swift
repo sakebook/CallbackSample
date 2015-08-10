@@ -23,6 +23,26 @@ final class ViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "comeback:", name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        println("ViewController: viewWillAppear")
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        println("ViewController: viewDidAppear")
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        println("ViewController: viewWillDisappear")
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        println("ViewController: viewDidDisappear")
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
@@ -122,7 +142,10 @@ extension ViewController: TaskDelegate {
                 }
             } else {
                 println("Safariを開かない")
-                let controller = self.storyboard?.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+                let controller = WebViewController.getController(self.storyboard!, article: qiitaArticle)
+                
+                
+//                let controller = self.storyboard?.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
                 self.presentViewController(controller, animated: true, completion: nil)
             }
         }

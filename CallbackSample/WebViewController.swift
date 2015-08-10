@@ -10,33 +10,52 @@ import Foundation
 import UIKit
 
 final class WebViewController: UIViewController {
+    
     @IBOutlet weak var webView: UIWebView!
+    @IBOutlet weak var customNavigationItem: UINavigationItem!
+    var article: QiitaArticle?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let url = NSURL(string: "http://yahoo.co.jp")
-        let request = NSURLRequest(URL: url!)
-        webView.loadRequest(request)
-        
-        let closeButton = UIButton(frame: CGRectMake(0, 0, 72, 72))
-        closeButton.setTitle("閉じる", forState: UIControlState.Normal)
-        
-        closeButton.addTarget(self, action: "close:", forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(closeButton)
+        if let article = article {
+            customNavigationItem.title = article.title
+            let url = NSURL(string: article.url)
+            let request = NSURLRequest(URL: url!)
+            webView.loadRequest(request)
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        println("WebViewController: viewWillAppear")
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        println("WebViewController: viewDidAppear")
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        println("WebViewController: viewWillDisappear")
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        println("WebViewController: viewDidDisappear")
     }
-    
-    internal func close(sender: AnyObject) {
+
+    @IBAction func clickClose(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+}
+
+
+extension WebViewController {
     
-    
+    internal static func getController(board: UIStoryboard, article: QiitaArticle) -> UIViewController {
+        let controller = board.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+        controller.article = article
+        return controller
+    }
 }
