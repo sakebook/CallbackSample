@@ -11,10 +11,10 @@ import UIKit
 
 final class ClosureAlert {
     
-    class func showAlert(parentViewController: UIViewController, title: String, message: String, completion: ((Bool) -> Void)?) {
+    class func showAlert(parentViewController: UIViewController, title: String, message: String, positiveLabel: String, negativeLabel: String, completion: ((Bool) -> Void)?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         
-        let yesAction = UIAlertAction(title: "見る", style: UIAlertActionStyle.Default, handler: {
+        let yesAction = UIAlertAction(title: positiveLabel, style: UIAlertActionStyle.Default, handler: {
             (action:UIAlertAction!) -> Void in
             // 引数にメソッドが使われてれば実行する
             if let completion = completion {
@@ -23,7 +23,7 @@ final class ClosureAlert {
             }
         })
         
-        let noAction = UIAlertAction(title: "見ない", style: UIAlertActionStyle.Default, handler: {
+        let noAction = UIAlertAction(title: negativeLabel, style: UIAlertActionStyle.Default, handler: {
             (action:UIAlertAction!) -> Void in
             // 引数にメソッドが使われてれば実行する
             if let completion = completion {

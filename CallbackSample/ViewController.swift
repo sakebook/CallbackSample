@@ -11,16 +11,12 @@ import UIKit
 final class ViewController: UIViewController {
     
     var openedArticle: QiitaArticle?
-    let NOTIFICATION_COMEBACK_ANDROID = "ComebackAndroid"
     let interestButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width , UIScreen.mainScreen().bounds.height))
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupButton()
         fetchArticleWihtTagName("Swift")
-        
-        // バックグラウンドから復帰した際のObserver
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "comeback:", name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -41,12 +37,11 @@ final class ViewController: UIViewController {
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         println("ViewController: viewDidDisappear")
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "comebackWebView:", name: NOTIFICATION_COMEBACK_WEB_VIEW, object: nil)
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
 }
 
@@ -66,33 +61,19 @@ extension ViewController {
     internal func comeback(notification: NSNotification) {
         println("becomeActive")
         // Safariで記事を開いた後に戻った時のみ呼ばれる
-        if let article = openedArticle {
-            openedArticle = nil
-            ClosureAlert.showAlert(self, title: "記事はどうだった？", message: "\(article.tags[article.number])も興味ある？",
-                completion: {(isPositive) -> Void in
-                    if isPositive {
-                        println("ほかにも興味があるらしい")
-                        let interest = Interest(article: article)
-                        self.chengeButtonDesign(interest)
-                        self.fetchArticleWihtTagName(interest.name)
-//                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "comebackAndroid:", name: self.NOTIFICATION_COMEBACK_ANDROID, object: nil)
-                    } else {
-                        println("ほかには興味がないらしい")
-                        self.chengeButtonDesign(Interest(type: .Swift))
-                    }
-                }
-            )
-        }
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
+        showRecomendAlert()
     }
     
-    internal func comebackAndroid(sender: AnyObject) {
-        println("comebackAndroid: method")
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NOTIFICATION_COMEBACK_ANDROID, object: nil)
+    internal func comebackWebView(sender: AnyObject) {
+        println("comebackWebView: method")
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NOTIFICATION_COMEBACK_WEB_VIEW, object: nil)
+        showRecomendAlert()
     }
 }
 
 
-// MARK: - Private
+// MARK: - ViewController
 extension ViewController {
     
     /**
@@ -121,6 +102,27 @@ extension ViewController {
         task.fetchLatestArticle(tagName)
         interestButton.enabled = false
     }
+    
+    func showRecomendAlert() {
+        if let article = openedArticle {
+            openedArticle = nil
+            ClosureAlert.showAlert(self, title: "記事はどうだった？", message: "\(article.tags[article.number])も興味ある？",
+                positiveLabel: "ある",
+                negativeLabel: "ない",
+                completion: {(isPositive) -> Void in
+                    if isPositive {
+                        println("ほかにも興味があるらしい")
+                        let interest = Interest(article: article)
+                        self.chengeButtonDesign(interest)
+                        self.fetchArticleWihtTagName(interest.name)
+                    } else {
+                        println("ほかには興味がないらしい")
+                        self.chengeButtonDesign(Interest(type: .Swift))
+                    }
+                }
+            )
+        }
+    }
 }
 
 
@@ -138,20 +140,25 @@ extension ViewController: TaskDelegate {
                 if let url = NSURL(string: qiitaArticle.url) {
                     println("Safariを開く")
                     self.openedArticle = qiitaArticle
+                    // バックグラウンドから復帰した際のObserver
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: "comeback:", name: UIApplicationWillEnterForegroundNotification, object: nil)
                     UIApplication.sharedApplication().openURL(url)
                 }
             } else {
                 println("Safariを開かない")
+                self.openedArticle = qiitaArticle
                 let controller = WebViewController.getController(self.storyboard!, article: qiitaArticle)
                 
-                
-//                let controller = self.storyboard?.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
                 self.presentViewController(controller, animated: true, completion: nil)
             }
         }
         
         // 実行するのはアラート選択時なのでcompleteActionに`()`はつけない。
-        ClosureAlert.showAlert(self, title: "最新の記事", message: qiitaArticle.title,
+        ClosureAlert.showAlert(self,
+            title: "最新の記事",
+            message: qiitaArticle.title,
+            positiveLabel: "Safariで見る",
+            negativeLabel: "アプリで見る",
             completion: completeAction
         )
     }

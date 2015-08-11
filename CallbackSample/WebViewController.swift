@@ -23,6 +23,7 @@ final class WebViewController: UIViewController {
             let request = NSURLRequest(URL: url!)
             webView.loadRequest(request)
         }
+        // TODO: else urlがなかった場合の処理
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -43,6 +44,7 @@ final class WebViewController: UIViewController {
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         println("WebViewController: viewDidDisappear")
+        NSNotificationCenter.defaultCenter().postNotificationName(NOTIFICATION_COMEBACK_WEB_VIEW, object: nil)
     }
 
     @IBAction func clickClose(sender: AnyObject) {

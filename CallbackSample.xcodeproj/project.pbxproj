@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		851939531B673DCD002DB944 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851939521B673DCD002DB944 /* WebViewController.swift */; };
+		851939551B79ADD2002DB944 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851939541B79ADD2002DB944 /* Const.swift */; };
 		85AAF5441B5F1DB800F9E830 /* Interest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AAF5431B5F1DB800F9E830 /* Interest.swift */; };
 		85AAF5461B60706D00F9E830 /* QiitaArticle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AAF5451B60706D00F9E830 /* QiitaArticle.swift */; };
 		85E7395A1B528FAA001931C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E739591B528FAA001931C4 /* AppDelegate.swift */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		851939521B673DCD002DB944 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		851939541B79ADD2002DB944 /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 		85AAF5431B5F1DB800F9E830 /* Interest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interest.swift; sourceTree = "<group>"; };
 		85AAF5451B60706D00F9E830 /* QiitaArticle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QiitaArticle.swift; sourceTree = "<group>"; };
 		85E739541B528FAA001931C4 /* CallbackSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CallbackSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +100,7 @@
 				85AAF5431B5F1DB800F9E830 /* Interest.swift */,
 				85AAF5451B60706D00F9E830 /* QiitaArticle.swift */,
 				851939521B673DCD002DB944 /* WebViewController.swift */,
+				851939541B79ADD2002DB944 /* Const.swift */,
 			);
 			path = CallbackSample;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 				85E7397A1B55496E001931C4 /* Task.swift in Sources */,
 				85E7397E1B5A06E3001931C4 /* ClosureAlert.swift in Sources */,
 				851939531B673DCD002DB944 /* WebViewController.swift in Sources */,
+				851939551B79ADD2002DB944 /* Const.swift in Sources */,
 				85E7395A1B528FAA001931C4 /* AppDelegate.swift in Sources */,
 				85AAF5441B5F1DB800F9E830 /* Interest.swift in Sources */,
 			);
