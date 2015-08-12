@@ -65,7 +65,7 @@ extension ViewController {
         showRecomendAlert()
     }
     
-    internal func comebackWebView(sender: AnyObject) {
+    internal func comebackWebView(notification: NSNotification) {
         println("comebackWebView: method")
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NOTIFICATION_COMEBACK_WEB_VIEW, object: nil)
         showRecomendAlert()
